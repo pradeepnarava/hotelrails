@@ -1,0 +1,9 @@
+<table class="table table-bordered">
+
+      <tr><td>Customer count</td><td> <%=Customer.count(:conditions=>{:date_of_transcation=>[@sd..@ed]})%></td></tr>
+<%(Item.all).each do |i|%>
+       <tr><td><%=i.item_name%></td><td><%=i.orderlists.sum(:quantity,:conditions=>{:created_at=>[@sd..@ed]})%></td></tr>
+<%end%>
+       <tr style="background-color:#cccccc; "><td></td><td>TOTAL</td><td></td><td><%=Customer.sum(:total,:conditions=>{:status=>2,:date_of_transcation=>[@sd..@ed]})%></td>
+        </tr>
+      </table>

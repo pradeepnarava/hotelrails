@@ -1,0 +1,6 @@
+<%=form_tag(:action=>'update_total') do-%>
+<%=hidden_field_tag 'id',@customer.id%>
+<%=text_field_tag 'adjusted_total',@customer.total%>
+<%=text_area_tag 'adjustment_reason',nil%>
+<%=submit_tag 'adjust'%>
+<%end%>

@@ -1,0 +1,119 @@
+<%#*<script>%>
+  <%#*function view(order)%>
+  <%#*{%>
+<%#*//alert(order);%>
+
+    <%#*var xmlhttp;%>
+    <%#*if (window.XMLHttpRequest)%>
+    <%#*{// code for IE7+, Firefox, Chrome, Opera, Safari%>
+      <%#*xmlhttp=new XMLHttpRequest();%>
+    <%#*}%>
+    <%#*else%>
+    <%#*{// code for IE6, IE5%>
+      <%#*xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");%>
+    <%#*}%>
+    <%#*xmlhttp.onreadystatechange=function()%>
+    <%#*{%>
+      <%#*if (xmlhttp.readyState==4 && xmlhttp.status==200)%>
+      <%#*{%>
+        <%#*document.getElementById("myDiv").innerHTML=xmlhttp.responseText;%>
+      <%#*}%>
+    <%#*}%>
+    <%#*xmlhttp.open("POST","receipt",true);%>
+    <%#*xmlhttp.send();%>
+    <%#*//setTimeout("loadXMLDoc()", 1000);%>
+  <%#*}%>
+
+  
+
+    
+
+  
+
+
+<%#*</script>%>
+
+
+
+<style>
+  select {
+width: 70px;
+border: 1px solid #CCC;
+background-color: white;
+}
+</style>
+
+
+
+<div class="page-header"style="background-color:#999999;">
+<h1>Dashboard</h1>
+</div>
+
+<div style="width: 500px;height:800px; background-color:blanchedalmond;margin-bottom: 50px;float: left;margin-left:30px;">
+
+
+
+
+      <table class="table table-bordered">
+        <tr style="background-color:#ffcccc; "> <td>SERIAL NO:</td> <td >TABLE NO: </td><td>TIME</td><td>TOTAL</td> 
+          <%#*<td></td>%>
+        </tr>
+        <%@customers.each do |customer|%>
+          
+        <tr style="background-color:whitesmoke; "><td><%=customer.serial_no%></td><td><%=customer.table.table_name%></td><td><%=customer.date_of_transcation%></td><td><%=customer.total%></td>
+          <%#*<td> <button type="button" class="btn-small btn-info" onclick="view(<%=order.id%)">view</button></td>%>
+        </tr>
+       
+      
+        <%end%>
+        <tr style="background-color:#cccccc; "><td></td><td>TOTAL</td><td></td><td><%=Customer.sum(:total,:conditions=>{:status=>2,:date_of_transcation=>Date.today})%></td>
+        </tr>
+      </table>
+
+
+
+
+
+ 
+     
+ 
+</div>
+<div id="myDiv"style="width:700px;background-color:#ffffcc;float: left;margin-left:30px; ">
+
+  <%=form_for :sorting, :url=>"dashboard" do%>
+ START DATE <%=date_select 'sorting[start_date]' ,"dob",:use_month_numbers => true,:order => [:day, :month, :year],:prompt => { :day => 'dd', :month => 'mm', :year => 'yyyy' },:start_year => 2000,:end_year=>(Date.today).year%>
+ END DATE <%=date_select 'sorting[end_date]' ,"dob",:use_month_numbers => true,:order => [:day, :month, :year],:prompt => { :day => 'dd', :month => 'mm', :year => 'yyyy' },:start_year => 2000,:end_year=>(Date.today).year%>
+  <%=submit_tag "ok",:class=>'btn-small btn-info'%>
+
+<%end%>
+  <%if !@sorted_customers.nil?%>
+ <%=link_to "save as PDF",{:action=>'sales',:format=>'pdf',:end_date=>@ed,:start_date=>@sd},:target=>'_blank',:class=>'btn btn-success'%><br/><br/>
+
+    <table class="table table-bordered">
+        <tr style="background-color:#ffcccc; "> <td>SERIAL NO:</td> <td >TABLE NO: </td><td>TIME</td><td>TOTAL</td>
+          <%#*<td></td>%>
+
+        </tr>
+
+        <%@sorted_customers.each do |customer|%>
+
+        <tr style="background-color:whitesmoke; "><td><%=customer.serial_no%></td><td><%=customer.table.table_name%></td><td><%=customer.date_of_transcation%></td><td><%=customer.total%></td>
+          <%#*<td> <button type="button" class="btn-small btn-info" onclick="view(<%=order.id%)">view</button></td>%>
+        </tr>
+
+
+        <%end%>
+        <tr style="background-color:#cccccc; "><td></td><td>TOTAL</td><td></td><td><%=Customer.sum(:total,:conditions=>{:status=>2,:date_of_transcation=>[@sd..@ed]})%></td>
+        </tr>
+      </table>
+ <%@a=[];@l=[]%>
+ <%(@sd..@ed).each do |x|%>
+
+ <%@l<<x;@a<<Customer.sum(:total,:conditions=>{:status=>2,:date_of_transcation=>x})%>
+ <%end%>
+<%=image_tag Gchart.pie_3d(:title => 'sales', :size => '500x200',:bar_colors => 'FF0000,00FF00',
+              :data => @a, :labels =>@l )%>
+ <%#=image_tag Gchart.line()%>
+  <%end%>
+ 
+</div>

@@ -1,0 +1,112 @@
+<script>
+  function loadXMLDoc()
+  {
+
+
+    var xmlhttp;
+    if (window.XMLHttpRequest)
+    {// code for IE7+, Firefox, Chrome, Opera, Safari
+      xmlhttp=new XMLHttpRequest();
+    }
+    else
+    {// code for IE6, IE5
+      xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    xmlhttp.onreadystatechange=function()
+    {
+      if (xmlhttp.readyState==4 && xmlhttp.status==200)
+      {
+        document.getElementById("myDiv").innerHTML=xmlhttp.responseText;
+      }
+    }
+    xmlhttp.open("GET","billing_nolayout",true);
+    xmlhttp.send();
+    setTimeout("loadXMLDoc()", 1000);
+  }
+  function checkout(orderId)
+  {
+    //alert("ok");
+
+    $.ajax({
+      type: "GET",
+      url: "paid",
+
+      data: {
+        'id' : orderId
+      }
+
+    });
+
+  }
+function adjustment(orderId)
+  {
+    alert(orderId);
+
+    $.ajax({
+      type: 'GET',
+      url: "adjustTotal",
+
+      data: {
+        'id' : orderId
+      }
+
+    });
+
+  }
+</script>
+<%= javascript_include_tag "jquery-1.4.4.min.js" %>
+<%= javascript_include_tag "jquery.printPage.js" %>
+<%= javascript_include_tag "facebox.js" %>
+
+
+
+<script>
+  $(document).ready(function() {
+ $('#adjust').facebox();
+    $(".btn.btn-warning").printPage();
+  });
+</script>
+
+
+
+
+
+<div id="myDiv">
+  <div class="page-header"style="background-color:#999999;">
+    <h1 style="text-align:left;">Billing</h1>
+  </div>
+  <%if !@orders.nil?%>
+
+
+    <div style="width: 600px;height:800px; background-color:#ffffcc;margin-bottom: 50px;float: left;margin-left: 30px;">
+      <table class="table table-bordered">
+        <tr style="background-color:blanchedalmond; "><td>SERIAL NO:</td> <td >TABLE NO: </td><td>TIME</td><td>TOTAL</td> <td>STATUS</td></tr>
+        <%@orders.each do |order|%>
+          
+            <tr><td><%=order.customer.serial_no%></td><td><%=order.customer.table.table_name%></td><td><%=order.created_at.strftime("%d/%M/%Y-%H:%M:%S")%></td><td><%=order.total%></td><td>served</td></tr>
+          
+        <%end%>
+      </table>
+    </div>
+
+
+
+
+    <div style="width: 600px;height:800px; background-color:#ccffcc;margin-bottom: 50px;float: left;margin-left: 30px;">
+      <table class="table table-bordered">
+        <tr style="background-color:blanchedalmond; "> <td>SERIAL NO:</td> <td >TABLE NO: </td><td>TIME</td><td>TOTAL</td> <td>STATUS</td><td></td></tr>
+        <%@customers.each do |customer|%>
+         
+        <tr><td><%=customer.serial_no%></td><td><%=customer.table.table_name%></td><td><%=customer.date_of_transcation%></td><td><%=customer.total%> <div id="adjust"><%=link_to "adjust", {:controller=>"hotelsessions",:action=>"adjustTotal",:id=>customer.id},:rel=>'facebox',:class=>"btn btn-success"%></div></td><td>Bill ordered</td>
+              <td><button type="button" class="btn btn-success" onclick="checkout(<%=customer.id%>)">Paid</button><br/><br/>
+                <%=link_to "print", {:action=>'receipt',:id=>customer.id}, :class=>"btn btn-warning" %> </td></tr>
+              
+            <%end%>
+      </table>
+    </div>
+
+
+
+  <%end%>
+
+</div>

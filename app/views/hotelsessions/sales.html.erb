@@ -1,0 +1,30 @@
+
+
+  <%if !@sorted_customers.nil?%>
+    <table class="table table-bordered">
+        <tr style="background-color:#ffcccc; "> <td>SERIAL NO:</td> <td >TABLE NO: </td><td>TIME</td><td>TOTAL</td>
+          <%#*<td></td>%>
+
+        </tr>
+
+        <%@sorted_customers.each do |customer|%>
+
+        <tr style="background-color:whitesmoke; "><td><%=customer.serial_no%></td><td><%=customer.table.table_name%></td><td><%=customer.date_of_transcation%></td><td><%=customer.total%></td>
+          <%#*<td> <button type="button" class="btn-small btn-info" onclick="view(<%=order.id%)">view</button></td>%>
+        </tr>
+
+
+        <%end%>
+        <tr style="background-color:#cccccc; "><td></td><td>TOTAL</td><td></td><td><%=Customer.sum(:total,:conditions=>{:status=>2,:date_of_transcation=>[@sd..@ed]})%></td>
+        </tr>
+      </table>
+ <%#@a=[];@l=[]%>
+ <%#(@sd..@ed).each do |x|%>
+
+ <%#@l<<x;@a<<Customer.sum(:total,:conditions=>{:status=>2,:date_of_transcation=>x})%>
+ <%#end%>
+<%#=image_tag Gchart.pie_3d(:title => 'sales', :size => '500x200',:bar_colors => 'FF0000,00FF00',
+              :data => @a, :labels =>@l )%>
+ <%#=image_tag Gchart.line()%>
+  <%end%>
+

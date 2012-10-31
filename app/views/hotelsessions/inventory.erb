@@ -1,0 +1,30 @@
+<style>
+  select {
+width: 70px;
+border: 1px solid #CCC;
+background-color: white;
+}
+</style>
+<div id="myDiv"style="width:700px;height:800px;background-color:#ffffcc;float: left;margin-left:30px; ">
+
+  <%=form_for :sorting, :url=>"inventory" do%>
+ START DATE <%=date_select 'sorting[start_date]' ,"dob",:use_month_numbers => true,:order => [:day, :month, :year],:prompt => { :day => 'dd', :month => 'mm', :year => 'yyyy' },:start_year => 2000,:end_year=>(Date.today).year%>
+ END DATE <%=date_select 'sorting[end_date]' ,"dob",:use_month_numbers => true,:order => [:day, :month, :year],:prompt => { :day => 'dd', :month => 'mm', :year => 'yyyy' },:start_year => 2000,:end_year=>(Date.today).year%>
+  <%=submit_tag "ok",:class=>'btn-small btn-info'%>
+
+<%end%>
+  
+ <%=link_to "save as PDF",{:action=>'inventory_pdf',:format=>'pdf',:end_date=>@ed,:start_date=>@sd},:target=>'_blank',:class=>'btn btn-success'%><br/><br/>
+
+    <table class="table table-bordered">
+
+      <tr><td>Customer count</td><td> <%=Customer.count(:conditions=>{:date_of_transcation=>[@sd..@ed]})%></td></tr>
+<%(Item.all).each do |i|%>
+       <tr><td><%=i.item_name%></td><td><%=i.orderlists.sum(:quantity,:conditions=>{:created_at=>[@sd..@ed]})%></td></tr>
+<%end%>
+       <tr style="background-color:#cccccc; "><td></td><td>TOTAL</td><td></td><td><%=Customer.sum(:total,:conditions=>{:status=>2,:date_of_transcation=>[@sd..@ed]})%></td>
+        </tr>
+      </table>
+ 
+
+</div>

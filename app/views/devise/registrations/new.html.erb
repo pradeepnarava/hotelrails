@@ -1,0 +1,20 @@
+<h2>Sign up</h2>
+
+<%= form_for(resource, :html => { :class => "form-horizontal"} ,:as => resource_name, :url => registration_path(resource_name)) do |f| %>
+  <%= devise_error_messages! %>
+
+  <div><%= f.label :email %><br />
+  <%= f.email_field :email %></div>
+
+  <div><%= f.label :password %><br />
+  <%= f.password_field :password %></div>
+
+  <div><%= f.label :password_confirmation %><br />
+  <%= f.password_field :password_confirmation %></div>
+<div><%= f.time_zone_select :time_zone, ActiveSupport::TimeZone.us_zones %></div>
+
+  <div><%= f.submit "Sign up" %></div>
+
+<% end %>
+
+<%= render "devise/shared/links" %>

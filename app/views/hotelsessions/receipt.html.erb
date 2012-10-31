@@ -1,0 +1,15 @@
+<div style="background-color:#cccccc;width: auto;height: auto; ">
+<table class="table table-bordered">
+  <tr style="background-color:#999999"><td>Items </td><td>Quantity</td>
+       <td>Price Of Each</td><td> Total Price</td></tr>
+<%@orders.each do |order|%>
+  <%order.orderlists.each do|item| %>
+  <tr><td><%=item.itemname%> </td><td><%=item.quantity%></td>
+       <td><%=item.price%></td><td> <%=(item.quantity*item.price)%></td></tr>
+<%end%><%end%>
+  <tr><td> </td><td></td>
+       <td>Tax</td><td> <%=User.find(1).tax%></td></tr>
+  <tr><td> </td><td></td>
+       <td>Total Bill</td><td> <%=@customer.total%></td></tr>
+</table>
+</div>

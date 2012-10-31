@@ -1,0 +1,131 @@
+<script>
+  function loadXMLDoc()
+  {
+
+
+    var xmlhttp;
+    if (window.XMLHttpRequest)
+    {// code for IE7+, Firefox, Chrome, Opera, Safari
+      xmlhttp=new XMLHttpRequest();
+    }
+    else
+    {// code for IE6, IE5
+      xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    xmlhttp.onreadystatechange=function()
+    {
+      if (xmlhttp.readyState==4 && xmlhttp.status==200)
+      {
+        document.getElementById("myDiv").innerHTML=xmlhttp.responseText;
+      }
+    }
+    xmlhttp.open("GET","show_nolayout",true);
+    xmlhttp.send();
+    setTimeout("loadXMLDoc()", 1000);
+  }
+  
+  function change_status(order)
+  {
+    //alert(order);
+
+    $.ajax({
+      type: "GET",
+      url: "delivered",
+       
+      data: {
+        'id' : order
+      }
+        
+    });
+
+  }
+
+
+</script>
+
+<div id="myDiv">
+  <div class="page-header" style="background-color:#999999;">
+    <h1 style="text-align:left;">Kitchen</h1>
+  </div>
+  <%if !@orders.nil?%>
+
+    <%@orders.each do |order_slice|%>
+
+      <div style="width: 600px; height:1200px; background-color:#ffffcc;margin-bottom: 50px;float: left;margin-left:30px;">
+
+        <%order_slice.each do |order|%>
+
+          <%if order.status==0%>
+
+            <%if (300-(Time.now-order.created_at).round)>0%>
+
+
+              <table class="table table-bordered">
+                <tr style="background-color:green; "> <td >TABLE NO:  <%=order.customer.table.table_name%></td><td><span class="badge badge-inverse"><%=(Time.at(Time.now-order.created_at)).utc.strftime("%H:%M:%S")%></span></td></tr>
+
+                <tr><td><table class="table table-bordered">
+                      <tr style="background-color:#ffcccc"><td>Item </td>  <td> Quantity </td> </tr>
+                      <%order.orderlists.each do|x|%>
+                        <%if x.cancel_item and (Time.now-x.updated_at)<60%>
+                          <tr style="background-color:red;"><td><%=x.itemname%></td>  <td>  <%=x.quantity%>
+
+                              <%=link_to "delete",{:controller=>'orderlists',:action=>'destroy',:id=>x.id}%>
+
+                            </td> </tr>
+                        <%else%>
+                          <tr><td><%=x.itemname%></td>  <td>  <%=x.quantity%>
+
+                            </td> </tr>
+
+                        <%end%>
+                      <%end%>
+                    </table></td>
+                  <td><button type="button" class="btn-large btn-primary" style="width: 250px;height:100px; "onclick="change_status(<%=order.id%>)">deliverd</button></td> </tr>
+
+
+              </table>
+
+
+
+            <%else%>
+              <table class="table table-bordered">
+                <tr style="background-color:red; "> <td >TABLE NO:  <%=order.customer.table.table_name%></td><td><span class="badge badge-inverse"><%=(Time.at(Time.now-order.created_at)).utc.strftime("%H:%M:%S")%></span></td></tr>
+
+                <tr><td><table class="table table-bordered">
+                      <tr style="background-color:#ffcccc"><td>Item </td>  <td> Quantity </td> </tr>
+                      <%order.orderlists.each do|x|%>
+                        <%if x.cancel_item and (Time.now-x.updated_at)<60%>
+                          <tr style="background-color:red;"><td><%=x.itemname%></td>  <td>  <%=x.quantity%>
+
+                              <%=link_to "delete",{:controller=>'orderlists',:action=>'destroy',:id=>x.id}%>
+
+                            </td> </tr>
+                        <%else%>
+                          <tr><td><%=x.itemname%></td>  <td>  <%=x.quantity%>
+
+                            </td> </tr>
+
+                        <%end%>
+                      <%end%>
+                    </table></td>
+                  <td><button type="button" class="btn-large btn-info" style="width: 250px;height:100px; "onclick="change_status(<%=order.id%>)">deliverd</button></td> </tr>
+
+
+              </table>
+            <%end%>
+
+          <%end%>
+
+        <%end%>
+      </div>
+
+
+
+
+    <%end%>
+
+
+
+  <%end%></div>
+
+
