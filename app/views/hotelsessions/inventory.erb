@@ -1,30 +1,73 @@
 <style>
   select {
-width: 70px;
-border: 1px solid #CCC;
-background-color: white;
-}
+    width: 70px;
+    border: 1px solid #CCC;
+    background-color: white;
+  }
 </style>
 <div id="myDiv"style="width:700px;height:800px;background-color:#ffffcc;float: left;margin-left:30px; ">
 
   <%=form_for :sorting, :url=>"inventory" do%>
- START DATE <%=date_select 'sorting[start_date]' ,"dob",:use_month_numbers => true,:order => [:day, :month, :year],:prompt => { :day => 'dd', :month => 'mm', :year => 'yyyy' },:start_year => 2000,:end_year=>(Date.today).year%>
- END DATE <%=date_select 'sorting[end_date]' ,"dob",:use_month_numbers => true,:order => [:day, :month, :year],:prompt => { :day => 'dd', :month => 'mm', :year => 'yyyy' },:start_year => 2000,:end_year=>(Date.today).year%>
-  <%=submit_tag "ok",:class=>'btn-small btn-info'%>
+    START DATE <%=date_select 'sorting[start_date]' ,"dob",:use_month_numbers => true,:order => [:day, :month, :year],:prompt => { :day => 'dd', :month => 'mm', :year => 'yyyy' },:start_year => 2000,:end_year=>(Date.today).year%>
+    END DATE <%=date_select 'sorting[end_date]' ,"dob",:use_month_numbers => true,:order => [:day, :month, :year],:prompt => { :day => 'dd', :month => 'mm', :year => 'yyyy' },:start_year => 2000,:end_year=>(Date.today).year%>
+    <%=submit_tag "ok",:class=>'btn-small btn-info'%>
 
-<%end%>
-  
- <%=link_to "save as PDF",{:action=>'inventory_pdf',:format=>'pdf',:end_date=>@ed,:start_date=>@sd},:target=>'_blank',:class=>'btn btn-success'%><br/><br/>
+  <%end%>
 
-    <table class="table table-bordered">
+  <%=link_to "save as PDF",{:action=>'inventory_pdf',:format=>'pdf',:end_date=>@ed,:start_date=>@sd},:target=>'_blank',:class=>'btn btn-success'%><br/><br/>
 
-      <tr><td>Customer count</td><td> <%=Customer.count(:conditions=>{:date_of_transcation=>[@sd..@ed]})%></td></tr>
-<%(Item.all).each do |i|%>
-       <tr><td><%=i.item_name%></td><td><%=i.orderlists.sum(:quantity,:conditions=>{:created_at=>[@sd..@ed]})%></td></tr>
-<%end%>
-       <tr style="background-color:#cccccc; "><td></td><td>TOTAL</td><td></td><td><%=Customer.sum(:total,:conditions=>{:status=>2,:date_of_transcation=>[@sd..@ed]})%></td>
-        </tr>
-      </table>
- 
+
+
+
+  <table class="table table-bordered">
+    <tr><td></td><%(1..@stcs_size-1).each do |x|%>
+        <td><%=@stcs[x].created_at.to_date%></td>
+      <%end%></tr>
+
+    <tr><td>Customer count</td><%(1..@stcs_size-1).each do |x|%>
+        <td> <%=Customer.count(:conditions=>{:date_of_transcation=>[@stcs[x-1].created_at..@stcs[x].created_at]})%></td>
+      <%end%></tr>
+    <tr><td>NET SALES</td><%(1..@stcs_size-1).each do |x|%>
+        <td><%=Customer.sum(:total,:conditions=>{:status=>2,:date_of_transcation=>[@stcs[x-1].created_at..@stcs[x].created_at]})%></td>
+      <%end%>  </tr>
+
+    <tr><td>COST OF DELIVERY</td><%(1..@stcs_size-1).each do |x|%>
+        <td><%=@stlis.deliveries.sum(:cost,:conditions=>{:status=>2,:date_of_transcation=>[@stcs[x-1].created_at..@stcs[x].created_at]})%></td>
+      <%end%>  </tr>
+    <tr><td>COST OF DELIVERY</td><%(1..@stcs_size-1).each do |x|%>
+        <td><%=(@stlis.deliveries.sum(:cost,:conditions=>{:status=>2,:date_of_transcation=>[@stcs[x-1].created_at..@stcs[x].created_at]}))-@stcs[x].cost%></td>
+      <%end%>  </tr>
+    <tr><td>TOTAL COST</td><%(1..@stcs_size-1).each do |x|%>
+        <td><%=@stcs[x].cost%></td>
+      <%end%>  </tr>
+    <tr><td>SALES REPORT</td></tr>
+    <%(Item.all).each do |i|%>
+      <tr><td><%=i.item_name%></td><%(1..@stcs_size-1).each do |x|%>
+          <td><%=i.orderlists.sum(:quantity,:conditions=>{:created_at=>[@stcs[x-1].created_at..@stcs[x].created_at]})%></td><%end%></tr>
+    <%end%>
+
+    <tr><td>STOCK IN REPORT </td></tr>
+    <%@stlis.each do |item|%>
+      <tr>
+        <td>item.name</td><%(1..@stcs_size-1).each do |x|%>
+          <td><%item.delivery_items.sum(:quantity,:condition=>{:created_at=>[@stcs[x-1].created_at..@stcs[x].created_at]})%>
+          </td>
+        <%end%>
+      </tr>
+    <%end%>
+    <tr>
+      <td>STOCK COUNT REPORT</td>
+    </tr>
+    <%@stlis.each do |item|%>
+      <tr>
+        <td>item.name</td><%(1..@stcs_size-1).each do |x|%>
+          <td><%item.remaining_items.sum(:quantity,:condition=>{:created_at=>@stcs[x].created_at})%>
+          </td>
+        <%end%>
+      </tr>
+    <%end%>
+
+  </table>
+
 
 </div>

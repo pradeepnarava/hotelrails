@@ -312,8 +312,10 @@ class HotelsessionsController < ApplicationController
       @sd=Date.parse( params[:sorting][:start_date].to_a.sort.collect{|c| c[1]}.join("-") )
       @ed=Date.parse( params[:sorting][:end_date].to_a.sort.collect{|c| c[1]}.join("-") )
       #@sorted_customers=Customer.find(:all,:order=>'updated_at DESC',:conditions=>{:status=>2,:date_of_transcation=>[@sd..@ed]})
-      
-      
+      @stcs=StockCount.find(:all,:conditions=>['created_at < ?',@sd])
+      @stcs.unshift(StockCount.find(:last,:condition=>{}))
+      @stcs_size=@stcs.size
+      @stlis=StockListItem.all
     end
   end
   def inventory_pdf
