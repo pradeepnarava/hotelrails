@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121022081151) do
+ActiveRecord::Schema.define(:version => 20121031102959) do
 
   create_table "customers", :force => true do |t|
     t.integer  "serial_no"
@@ -23,6 +23,21 @@ ActiveRecord::Schema.define(:version => 20121022081151) do
     t.string   "adjustment_reason"
     t.datetime "created_at",          :null => false
     t.datetime "updated_at",          :null => false
+  end
+
+  create_table "deliveries", :force => true do |t|
+    t.float    "cost"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "delivery_items", :force => true do |t|
+    t.integer  "stock_list_item_id"
+    t.integer  "delivery_id"
+    t.float    "mrp"
+    t.integer  "quantity"
+    t.datetime "created_at",         :null => false
+    t.datetime "updated_at",         :null => false
   end
 
   create_table "items", :force => true do |t|
@@ -48,6 +63,27 @@ ActiveRecord::Schema.define(:version => 20121022081151) do
     t.integer  "price"
     t.datetime "created_at",  :null => false
     t.datetime "updated_at",  :null => false
+  end
+
+  create_table "remaining_items", :force => true do |t|
+    t.integer  "stock_list_item_id"
+    t.integer  "stock_count_id"
+    t.integer  "quantity"
+    t.float    "mrp"
+    t.datetime "created_at",         :null => false
+    t.datetime "updated_at",         :null => false
+  end
+
+  create_table "stock_counts", :force => true do |t|
+    t.float    "cost"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "stock_list_items", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "tables", :force => true do |t|

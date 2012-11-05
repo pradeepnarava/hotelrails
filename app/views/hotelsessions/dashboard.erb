@@ -49,13 +49,13 @@ background-color: white;
 <h1>Dashboard</h1>
 </div>
 
-<div style="width: 500px;height:800px; background-color:blanchedalmond;margin-bottom: 50px;float: left;margin-left:30px;">
+<div style="width: 500px;height:800px; background-color:white;margin-bottom: 50px;float: left;margin-left:30px;overflow:scroll">
 
 
 
 
       <table class="table table-bordered">
-        <tr style="background-color:#ffcccc; "> <td>SERIAL NO:</td> <td >TABLE NO: </td><td>TIME</td><td>TOTAL</td> 
+        <tr style="background-color:blanchedalmond; "> <td>SERIAL NO:</td> <td >TABLE NO: </td><td>TIME</td><td>TOTAL</td>
           <%#*<td></td>%>
         </tr>
         <%@customers.each do |customer|%>
@@ -78,7 +78,7 @@ background-color: white;
      
  
 </div>
-<div id="myDiv"style="width:700px;background-color:#ffffcc;float: left;margin-left:30px; ">
+<div id="myDiv"style="width:700px;height:800px;background-color:white;float: left;margin-left:30px;overflow:scroll; ">
 
   <%=form_for :sorting, :url=>"dashboard" do%>
  START DATE <%=date_select 'sorting[start_date]' ,"dob",:use_month_numbers => true,:order => [:day, :month, :year],:prompt => { :day => 'dd', :month => 'mm', :year => 'yyyy' },:start_year => 2000,:end_year=>(Date.today).year%>
@@ -107,12 +107,15 @@ background-color: white;
         </tr>
       </table>
  <%@a=[];@l=[]%>
+ <%@a<<0;@l<<0%>
  <%(@sd..@ed).each do |x|%>
-
- <%@l<<x;@a<<Customer.sum(:total,:conditions=>{:status=>2,:date_of_transcation=>x})%>
+<%t=Customer.sum(:total,:conditions=>{:status=>2,:date_of_transcation=>x})%>
+ <%if t!=0%>
+    <%@l<<x;@a<<t%>
  <%end%>
-<%=image_tag Gchart.pie_3d(:title => 'sales', :size => '500x200',:bar_colors => 'FF0000,00FF00',
-              :data => @a, :labels =>@l )%>
+ <%end%>
+<%=image_tag Gchart.line(:title => 'sales',:bar_colors => 'FF0000,00FF00',
+              :data => @a,:axis_with_labels => ["x","y"],:axis_labels => [@l,@a] )%>
  <%#=image_tag Gchart.line()%>
   <%end%>
  
