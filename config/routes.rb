@@ -1,6 +1,8 @@
 HotelApp::Application.routes.draw do
  
   devise_for :users
+  resources :delivery_items
+  resources :stock_list_items
  #resources :hotelsessions
   # The priority is based upon order of creation:
   # first created -> highest priority.

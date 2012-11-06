@@ -4,6 +4,8 @@
   <title>HotelApp</title>
   <%= stylesheet_link_tag    "application", :media => "all" %>
   <%= javascript_include_tag "application" %>
+  <%#= javascript_include_tag  "jquery" %>
+  <%= javascript_include_tag :defaults, "nested_form" %>
   <%= csrf_meta_tags %>
 
 </head>
@@ -21,7 +23,7 @@
     <li><%=link_to "kitchen",'/hotelsessions/show',:class=>"btn-large btn-info"%></li>
     <li><%=link_to "billing",'/hotelsessions/billing',:class=>"btn-large btn-success"%></li>
 <li style="float:right;margin-right: 100px"><%=link_to "setting",edit_user_registration_path ,:class=>"btn-large btn-primary"%></li>
-
+<li><%=link_to "inventory",'/hotelsessions/inventory',:class=>"btn-large btn-info"%></li>
     <li style="float:right;"> <%= link_to "Sign out", destroy_user_session_path, :method => :delete,:class=>"btn-large btn-danger" %></li>
 
      </ul>

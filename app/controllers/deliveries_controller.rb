@@ -1,5 +1,6 @@
 class DeliveriesController < ApplicationController
   #/deliveries/create.json,{:stock_list_item_id=>"1,2",:mrp=>"12.2,13.5",:quantity=>"3,4"}
+  
   def create
     @stock_list_item_ids=params[:stock_list_item_id].split(",")
     @mrps=params[:mrp].split(",")

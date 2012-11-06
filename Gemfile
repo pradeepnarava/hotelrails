@@ -12,6 +12,7 @@ gem 'googlecharts'
 gem 'pdfkit', "~> 0.5.2"
 #gem 'wkhtmltopdf'
 gem "wkhtmltopdf-binary", "~> 0.9.5.3"
+gem "nested_form"
 
 # Gems used only for assets and not required
 # in production environments by default.

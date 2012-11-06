@@ -17,6 +17,7 @@
     <li><%=link_to "kitchen",'show',:class=>"btn-large btn-info",:target=>'_blank'%></li>
     <li><%=link_to "billing",'billing',:class=>"btn-large btn-success",:target=>'_blank'%></li>
 <li style="float:right;margin-right: 100px"><%=link_to "setting",edit_user_registration_path ,:class=>"btn-large btn-primary"%></li>
+<li><%=link_to "inventory",'/hotelsessions/inventory',:class=>"btn-large btn-info"%></li>
 
 <% if user_signed_in? %>
     <li style="float:right;"> <%= link_to "Sign out", destroy_user_session_path, :method => :delete,:class=>"btn-large btn-danger" %></li>

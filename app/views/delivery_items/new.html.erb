@@ -1,0 +1,42 @@
+
+<%= nested_form_for @stock_list_items,:html => { :multipart => true } do |f| %>
+  <div style="width:800px;height:500px;background-color:white;margin:auto;border:3px solid #333333;overflow:scroll;">
+<table class="table table-hover"style="border:1px solid rgb(221,221,221);margin:auto; ">
+  <tr style="background-color:#ffcccc">
+    <td> Name</td> <td>MRP</td><td>Quantity</td>
+  </tr>
+<%@stlis.each do |s|%>
+  <tr>
+    <td><%=label :delivery, :name,s.name%></td>
+    <td><%=text_field :delivery, :mrp,:style=>"width:50px;height:20px"%></td>
+    <td><%=text_field :delivery, :quantity, :style=>"width:50px;height:20px"%></td>
+    
+  </tr>
+
+<%end%>
+</table>
+</div>
+<div style="width:800px;height:100px;background-color:white;margin:auto;border:3px solid black;border-top:none;border-bottom: none; overflow:scroll;">
+  
+  <table class="table table-hover" style="border:1px solid rgb(221,221,221);margin:auto; ">
+    <tr style="background-color:#999999">
+      <td>Items newly Added:</td><td></td><td></td>
+    </tr><tr>
+      <%= f.fields_for :delivery_items do |task_form| %>
+   <td><%=task_form.text_field  :name,:style=>"width:110px;height:20px"%></td>
+    <td><%#=task_form.text_field  :mrp,:style=>"width:50px;height:20px;"%></td>
+    <td><%#=task_form.text_field  :quantity, :style=>"width:50px;height:20px"%></td>
+    <td><%= task_form.link_to_remove "Remove this task" %></td>
+<% end %>
+<p><%= f.link_to_add "Add a task", :stock_list_item %></p>
+
+      
+
+ 
+  
+    </tr></table>
+</div>
+<div style="width:800px;height:50px;background-color:#999999;margin:auto;border:3px solid black;border-top:none; overflow:scroll;">
+
+<%=f.submit "submit",:class=>"btn-large btn-primary",:style=>"float:right;margin-right:30px;margin-top:5px;"%></div>
+<%end%>
